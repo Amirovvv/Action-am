@@ -1,4 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router'
+import { getAuth, onAuthStateChanged } from 'firebase/auth'
+import store from '../store'
 
 const routes = [
 	{
@@ -16,6 +18,23 @@ const routes = [
 const router = createRouter({
 	history: createWebHistory(),
 	routes,
+})
+
+router.beforeResolve((to, from, next) => {
+	const authPages = ['auth']
+	const auth = getAuth()
+	const authRequired = authPages.includes(to.name)
+
+	onAuthStateChanged(auth, (user) => {
+		if (authRequired === true && user) {
+			store.dispatch('authUser', user)
+			router.push('/')
+		} else if (authRequired !== true && !user) {
+			next('/auth')
+		} else {
+			next()
+		}
+	})
 })
 
 export default router
