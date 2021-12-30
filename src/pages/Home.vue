@@ -1,9 +1,12 @@
 <template>
-  <h1>Home</h1>
+  <main-layout></main-layout>
 </template>
 
 <script>
-export default {};
+import MainLayout from "../layouts/MainLayout.vue";
+export default {
+  components: { MainLayout },
+};
 </script>
 
 <style>
