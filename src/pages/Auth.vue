@@ -1,5 +1,5 @@
 <template>
-  <div class="auth flex items-center justify-center h-max">
+  <div class="auth w-full flex items-center justify-center h-max">
     <div class="text-center">
       <div class="text-2xl">Welcome</div>
       <button
@@ -26,14 +26,33 @@
   </div>
 </template>
 
-<script setup>
-import { getAuth, signInWithPopup, GoogleAuthProvider } from "firebase/auth";
+<script>
+import { signInWithPopup } from "firebase/auth";
+import { useRouter } from "vue-router";
+import { useStore } from "vuex";
+import { auth, provider } from "@/firebase/firebaseConfig";
 
-function googleSignUp() {
-  const auth = getAuth();
-  const provider = new GoogleAuthProvider();
-  signInWithPopup(auth, provider);
-}
+export default {
+  setup() {
+    const store = useStore();
+    const router = useRouter();
+
+    function googleSignUp() {
+      signInWithPopup(auth, provider)
+        .then(() => {
+          store.dispatch("authUser");
+          router.push("/");
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    }
+
+    return {
+      googleSignUp,
+    };
+  },
+};
 </script>
 
 <style lang="scss">

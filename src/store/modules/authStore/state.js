@@ -1,3 +1,1 @@
-export default {
-	userInfo: null,
-}
+export default {}

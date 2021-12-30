@@ -1,17 +1,16 @@
 import { collection, addDoc } from 'firebase/firestore'
-import { db } from '/src/utils/firebase'
+import { db, auth } from '@/firebase/firebaseConfig'
 
 export default {
-	async authUser({ commit }, payload) {
+	async authUser() {
 		const user = {
-			name: payload.displayName,
-			email: payload.email,
-			photo: payload.photoURL,
-			token: payload.accessToken,
+			name: auth.currentUser.displayName,
+			email: auth.currentUser.email,
+			photo: auth.currentUser.photoURL,
+			uid: auth.currentUser.uid,
 		}
 		try {
 			await addDoc(collection(db, 'users'), user)
-			commit('USER_INFO', user)
 		} catch (e) {
 			console.log(e)
 		}
