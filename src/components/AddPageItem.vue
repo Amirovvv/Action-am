@@ -1,6 +1,6 @@
 <template>
   <div class="item relative flex items-center">
-    <div class="mb-2">
+    <div class="mb-3">
       <div
         class="flex w-56 px-3"
         @mouseover="activeHover = true"
