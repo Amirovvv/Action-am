@@ -5,4 +5,7 @@ export default {
 	CLEAR_PAGES_DATA(state) {
 		state.pagesData = []
 	},
+	SET_PAGE_ID(state, payload) {
+		state.pageId = payload
+	},
 }

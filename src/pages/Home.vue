@@ -1,13 +1,13 @@
 <template>
-  <main-layout></main-layout>
+	<main-layout></main-layout>
+	<router-view />
 </template>
 
 <script>
-import MainLayout from "../layouts/MainLayout.vue";
+import MainLayout from '../layouts/MainLayout.vue'
 export default {
-  components: { MainLayout },
-};
+	components: { MainLayout },
+}
 </script>
 
-<style>
-</style>
+<style></style>

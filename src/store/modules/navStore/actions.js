@@ -35,4 +35,18 @@ export default {
 			console.log(e)
 		}
 	},
+
+	async getPageId({ commit }, id) {
+		try {
+			onSnapshot(
+				doc(db, 'users/' + auth.currentUser.uid + '/pages/' + id),
+				(doc) => {
+					commit('SET_PAGE_ID', doc.data())
+					console.log('Current data: ', doc.data())
+				},
+			)
+		} catch (e) {
+			console.log(e)
+		}
+	},
 }
