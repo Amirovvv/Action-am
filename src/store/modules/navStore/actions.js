@@ -5,11 +5,12 @@ import {
 	collection,
 	setDoc,
 	onSnapshot,
+	updateDoc,
 } from '@/firebase/firebaseConfig'
 
 export default {
 	async setPage({ commit }, type) {
-		commit('CLEAR_PAGES_DATA')
+		await commit('CLEAR_PAGES_DATA')
 		try {
 			const page = doc(
 				collection(db, 'users/' + auth.currentUser.uid + '/pages'),
@@ -21,8 +22,8 @@ export default {
 	},
 
 	async getPages({ commit }) {
-		commit('CLEAR_PAGES_DATA')
 		try {
+			await commit('CLEAR_PAGES_DATA')
 			onSnapshot(
 				collection(db, 'users/' + auth.currentUser.uid + '/pages'),
 				(sn) => {
@@ -31,6 +32,7 @@ export default {
 					})
 				},
 			)
+			console.log('aaa')
 		} catch (e) {
 			console.log(e)
 		}
@@ -41,8 +43,7 @@ export default {
 			onSnapshot(
 				doc(db, 'users/' + auth.currentUser.uid + '/pages/' + id),
 				(doc) => {
-					commit('SET_PAGE_ID', doc.data())
-					console.log('Current data: ', doc.data())
+					commit('GET_PAGE_ID', doc.data())
 				},
 			)
 		} catch (e) {
