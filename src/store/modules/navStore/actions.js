@@ -50,4 +50,19 @@ export default {
 			console.log(e)
 		}
 	},
+
+	async updatePageName({ commit }, { id, name }) {
+		try {
+			await commit('CLEAR_PAGES_DATA')
+			const updateView = doc(
+				db,
+				'users/' + auth.currentUser.uid + '/pages/' + id,
+			)
+			await updateDoc(updateView, {
+				name: name,
+			})
+		} catch (e) {
+			console.log(e)
+		}
+	},
 }

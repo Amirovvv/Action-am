@@ -6,6 +6,7 @@ import {
 	addDoc,
 	setDoc,
 	onSnapshot,
+	updateDoc,
 } from 'firebase/firestore'
 import { getAuth, GoogleAuthProvider, onAuthStateChanged } from 'firebase/auth'
 
@@ -35,4 +36,5 @@ export {
 	collection,
 	addDoc,
 	setDoc,
+	updateDoc,
 }
