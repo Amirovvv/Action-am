@@ -42,6 +42,7 @@ export default {
 				name: '',
 				id: task.id,
 				date: new Date().toLocaleDateString(),
+				checked: false,
 			})
 		} catch (e) {
 			console.log(e)
@@ -74,6 +75,22 @@ export default {
 					'users/' + auth.currentUser.uid + '/pages/' + id + '/tasks/' + task,
 				),
 			)
+		} catch (e) {
+			console.log(e)
+		}
+	},
+
+	async checkedTask({ commit }, { id, task, check }) {
+		await commit('CLEAR_TASKS')
+
+		try {
+			const checked = doc(
+				db,
+				'users/' + auth.currentUser.uid + '/pages/' + id + '/tasks/' + task,
+			)
+			updateDoc(checked, {
+				checked: check,
+			})
 		} catch (e) {
 			console.log(e)
 		}

@@ -61,9 +61,13 @@
 						:class="activeMenu === task.id ? 'bg-sky-400/40' : ''"
 					>
 						<td class="border border-gray-700 p-2 border-l-0 text-center">
-							<!-- <label class="inline-flex items-center">
-								<input type="checkbox" class="opacity-0 absolute" checked />
-							</label> -->
+							<label class="inline-flex items-center">
+								<input
+									type="checkbox"
+									v-model="task.checked"
+									@change="handleCheck($event, task.id)"
+								/>
+							</label>
 						</td>
 						<td class="border border-gray-700 p-2">
 							<div>
@@ -106,6 +110,7 @@ import { computed, ref } from '@vue/reactivity'
 import { useStore } from 'vuex'
 import { useRoute } from 'vue-router'
 import { onMounted, watch } from '@vue/runtime-core'
+import moment from 'moment'
 
 export default {
 	setup() {
@@ -141,6 +146,14 @@ export default {
 
 		const newTask = () => {
 			store.dispatch('setTask', route.params.id)
+		}
+
+		const handleCheck = (e, id) => {
+			store.dispatch('checkedTask', {
+				id: route.params.id,
+				task: id,
+				check: e.target.checked,
+			})
 		}
 
 		const updateTaskName = (task, name) => {
@@ -190,6 +203,7 @@ export default {
 			updateTaskName,
 			openMenu,
 			deleteTask,
+			handleCheck,
 		}
 	},
 }
