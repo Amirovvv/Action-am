@@ -10,20 +10,23 @@
 			<div class="flex-1 flex justify-end items-center">
 				<div
 					@click="toggleFilterMenu"
-					class="flex relative mr-6 items-center cursor-pointer"
+					class="flex relative mr-6 items-center cursor-pointer filter"
 				>
-					<span class="mr-1 text-sm">Filter by status</span>
+					<span class="mr-1 text-sm"
+						>Filter by status
+						<span v-if="activeFilter">:{{ activeFilter }}</span></span
+					>
 					<svg width="10" height="10">
 						<use xlink:href="@/assets/icons.svg#arrow-down"></use>
 					</svg>
 					<ul
 						v-show="filterMenu"
-						class="w-full filter-menu absolute top-6 list-none text-xs bg-gray-800"
+						class="w-full z-40 filter-menu absolute top-6 list-none text-xs bg-gray-800"
 					>
-						<li @click="filteredInvoices">Draft</li>
-						<li @click="filteredInvoices">Pending</li>
-						<li @click="filteredInvoices">Paid</li>
-						<li @click="filteredInvoices">Clear Filter</li>
+						<li @click="activateFilter">Done</li>
+						<li @click="activateFilter">Not Done</li>
+						<li @click="activateFilter">Name</li>
+						<li @click="activateFilter">Clear Filter</li>
 					</ul>
 				</div>
 
@@ -119,10 +122,37 @@ export default {
 		const columns = ref(['Status', 'Name', 'Date'])
 		const tasks = computed(() => store.getters.tasks)
 
+		const activeFilter = ref()
+		const activateFilter = (e) => {
+			if (e.target.innerText === 'Clear Filter') {
+				activeFilter.value = null
+				return
+			}
+			activeFilter.value = e.target.innerText
+		}
+
 		const filterMenu = ref(false)
 		const toggleFilterMenu = () => {
 			filterMenu.value = !filterMenu.value
 		}
+		const filteredTasks = computed(() => {
+			const tasksSort = tasks.value.map((item) => {
+				return item
+			})
+
+			if (activeFilter.value === 'Done') {
+				return tasksSort.filter((a) => a.checked === true)
+			}
+			if (activeFilter.value === 'Not Done') {
+				return tasksSort.filter((a) => a.checked === false)
+			}
+			if (activeFilter.value === 'Name') {
+				return tasksSort.sort((a, b) => a.name.localeCompare(b.name))
+			}
+			return tasksSort.sort(
+				(a, b) => +moment(b.date, 'DD.MM.YY') - +moment(a.date, 'DD.MM.YY'),
+			)
+		})
 
 		const showMenu = ref(false)
 		const activeMenu = ref()
@@ -198,12 +228,15 @@ export default {
 			showMenu,
 			postitionMenu,
 			activeMenu,
+			filteredTasks,
+			activeFilter,
 			toggleFilterMenu,
 			newTask,
 			updateTaskName,
 			openMenu,
 			deleteTask,
 			handleCheck,
+			activateFilter,
 		}
 	},
 }
