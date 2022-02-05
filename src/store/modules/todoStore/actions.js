@@ -6,12 +6,13 @@ import {
 	setDoc,
 	onSnapshot,
 	updateDoc,
+	deleteDoc,
 } from '@/firebase/firebaseConfig'
 
 export default {
 	async getTasks({ commit }, id) {
+		await commit('CLEAR_TASKS')
 		try {
-			await commit('CLEAR_TASKS')
 			onSnapshot(
 				collection(
 					db,
@@ -48,8 +49,9 @@ export default {
 	},
 
 	async updateTaskName({ commit }, { id, task, name }) {
+		await commit('CLEAR_TASKS')
+
 		try {
-			await commit('CLEAR_TASKS')
 			const updateView = doc(
 				db,
 				'users/' + auth.currentUser.uid + '/pages/' + id + '/tasks/' + task,
@@ -57,6 +59,21 @@ export default {
 			updateDoc(updateView, {
 				name: name,
 			})
+		} catch (e) {
+			console.log(e)
+		}
+	},
+
+	async deleteTask({ commit }, { id, task }) {
+		await commit('CLEAR_TASKS')
+
+		try {
+			await deleteDoc(
+				doc(
+					db,
+					'users/' + auth.currentUser.uid + '/pages/' + id + '/tasks/' + task,
+				),
+			)
 		} catch (e) {
 			console.log(e)
 		}

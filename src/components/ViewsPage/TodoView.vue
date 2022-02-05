@@ -54,9 +54,11 @@
 				</thead>
 				<tbody>
 					<tr
-						class="text-white font-semibold text-sm"
-						v-for="task in tasks"
+						class="text-white font-semibold text-sm relative"
+						v-for="task in filteredTasks"
 						:key="task.id"
+						@contextmenu.prevent="openMenu($event, task.id)"
+						:class="activeMenu === task.id ? 'bg-sky-400/40' : ''"
 					>
 						<td class="border border-gray-700 p-2 border-l-0 text-center">
 							<!-- <label class="inline-flex items-center">
@@ -81,6 +83,21 @@
 				</tbody>
 			</table>
 		</div>
+
+		<ul
+			v-show="showMenu"
+			:style="postitionMenu"
+			class="absolute bg-gray-600 w-48 rounded py-2 text-white"
+		>
+			<li @click="deleteTask" class="hover:bg-gray-400/40">
+				<div class="flex items-center px-2">
+					<svg width="18" height="18">
+						<use xlink:href="@/assets/icons.svg#trash"></use>
+					</svg>
+					<span class="pl-1">Delete</span>
+				</div>
+			</li>
+		</ul>
 	</div>
 </template>
 
@@ -100,6 +117,17 @@ export default {
 		const filterMenu = ref(false)
 		const toggleFilterMenu = () => {
 			filterMenu.value = !filterMenu.value
+		}
+
+		const showMenu = ref(false)
+		const activeMenu = ref()
+		const postitionMenu = ref({ left: 0, top: 0 })
+		const openMenu = (e, task) => {
+			showMenu.value = true
+			activeMenu.value = task
+
+			postitionMenu.value.top = `${e.pageY}px`
+			postitionMenu.value.left = `${e.pageX}px`
 		}
 
 		const viewName = computed({
@@ -123,6 +151,13 @@ export default {
 			})
 		}
 
+		const deleteTask = () => {
+			store.dispatch('deleteTask', {
+				id: route.params.id,
+				task: activeMenu.value,
+			})
+		}
+
 		watch(
 			() => route.params.id,
 			() => {
@@ -132,7 +167,14 @@ export default {
 
 		onMounted(() => {
 			store.dispatch('getTasks', route.params.id)
-			console.log(tasks.value)
+
+			document.addEventListener('click', (e) => {
+				if (e) {
+					e.target.closest('.filter') ? null : (filterMenu.value = false)
+				}
+				showMenu.value = false
+				activeMenu.value = null
+			})
 		})
 
 		return {
@@ -140,9 +182,14 @@ export default {
 			columns,
 			tasks,
 			viewName,
+			showMenu,
+			postitionMenu,
+			activeMenu,
 			toggleFilterMenu,
 			newTask,
 			updateTaskName,
+			openMenu,
+			deleteTask,
 		}
 	},
 }
